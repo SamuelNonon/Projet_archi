@@ -16,9 +16,8 @@ int main (void){
         programme->PC += 1;
         etat = selectionner_instruction (programme);
     }
-    if (etat == 1){
+    if (etat == 1)
         printf ("Garbage in, garbage out :/\n");
-        return 1;
-    }
+    supprimer_programme (programme);
     return 0;
 }
