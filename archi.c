@@ -259,6 +259,38 @@ int recup_fichier(void) {
                    //mettre dans les tableau ou l'utiliser pour calculer les etiquettes?
                }
            }
+           else if(code_inst(inst->instruction)==4){
+            if (inst->argument[0]=='-'){
+                strcpy(copie, inst->argument);
+                for (int i=1; i<strlen(inst->argument); i++){
+                    copie[i-1]=copie[i];
+                }
+                copie[strlen(copie)-1]='\0';
+            }
+            else {
+                strcpy(copie, inst->argument);
+            }
+            if (syntaxe(copie)==0){
+                printf("Erreur a la ligne %d, %s ne prend que des entiers en argument.\n", ligne, inst->instruction);
+                free(inst);
+                fclose(f);
+                exit(1);
+            }
+            else {
+                int x=atoi(inst->argument);
+                char machine[9];
+                sprintf(machine, "%02x", code_inst(inst->instruction));  
+                strcat(machine, " ");
+                if (x<0){  
+                    sprintf(machine + strlen(machine), "%04x", (unsigned short) x);
+                }
+                else {
+                    sprintf(machine + strlen(machine), "%04x", x);
+                }
+                strcpy(tab[ligne-1], machine);
+            }
+            
+           }
            else {
                if (strcmp(inst->argument, "NULL")==0){
                 printf("Erreur a la ligne %d, %s attend un argument.\n", ligne, inst->instruction);
@@ -285,8 +317,8 @@ int recup_fichier(void) {
                 }
                }
                else if (code_inst(inst->instruction)==2 || code_inst(inst->instruction)==9 || code_inst(inst->instruction)==10){
-                if(x>1000){
-                    printf("Erreur a la ligne %d, la taille reservee a la pile est de 1000.\n", ligne);
+                if(x>5000){
+                    printf("Erreur a la ligne %d, adresse donnée est hors mémoire la place réservée à la mémoire est de 5000.\n", ligne);
                     free(inst);
                     fclose(f);
                     exit(1);
